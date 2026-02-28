@@ -1,31 +1,13 @@
 setup:
-  - name: Install Go 1.25
-    run: |
-      wget -q https://go.dev/dl/go1.25.0.linux-amd64.tar.gz -O /tmp/go1.25.0.linux-amd64.tar.gz
-      sudo rm -rf /usr/local/go
-      sudo tar -C /usr/local -xzf /tmp/go1.25.0.linux-amd64.tar.gz
-      rm /tmp/go1.25.0.linux-amd64.tar.gz
-    env:
-      PATH: /usr/local/go/bin:${PATH}
-
-  - name: Add Go to PATH
-    run: export PATH=/usr/local/go/bin:$PATH && echo 'export PATH=/usr/local/go/bin:$PATH' >> ~/.bashrc
-
   - name: Build a target to verify toolchain
     run: make all WHAT=cmd/kubectl
-    env:
-      PATH: /usr/local/go/bin:${PATH}
 
 maintenance:
   - name: Rebuild after pulling changes
     run: make all WHAT=cmd/kubectl
-    env:
-      PATH: /usr/local/go/bin:${PATH}
 
   - name: Run unit tests for a specific package
     run: make test WHAT=./pkg/util/hash
-    env:
-      PATH: /usr/local/go/bin:${PATH}
 
 knowledge:
   - name: Build system
