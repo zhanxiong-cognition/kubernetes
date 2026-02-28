@@ -1,0 +1,50 @@
+setup:
+  - name: Build a target to verify toolchain
+    run: make all WHAT=cmd/kubectl
+
+maintenance:
+  - name: Rebuild after pulling changes
+    run: make all WHAT=cmd/kubectl
+
+  - name: Run unit tests for a specific package
+    run: make test WHAT=./pkg/util/hash
+
+knowledge:
+  - name: Build system
+    contents: >
+      Kubernetes uses GNU Make with helper shell scripts under hack/make-rules/.
+      The top-level Makefile delegates to hack/make-rules/build.sh for compilation
+      and hack/make-rules/test.sh for unit tests. The project is written in Go
+      and uses vendored dependencies (vendor/ directory).
+
+  - name: Go version requirement
+    contents: >
+      The go.mod file specifies go 1.25.0. The Go toolchain will automatically
+      download a compatible patch version (e.g. 1.25.7) at first build if only
+      1.25.0 is installed. Make sure to install at least Go 1.25.0.
+
+  - name: Building
+    contents: >
+      Use 'make' or 'make all' to build everything. Use 'make all WHAT=cmd/kubectl'
+      to build a single binary. Binaries are placed in _output/bin/. Building all
+      targets takes a long time; prefer building specific targets during development.
+
+  - name: Running unit tests
+    contents: >
+      Use 'make test WHAT=./pkg/path/to/package' to run unit tests for specific
+      packages. Multiple packages can be space-separated. Running all tests with
+      just 'make test' is very slow. The test runner uses gotestsum (auto-installed
+      from hack/tools on first run) and runs tests with -race by default.
+
+  - name: Useful Make targets
+    contents: >
+      'make all' - build code; 'make test' - run unit tests; 'make test-integration' -
+      run integration tests; 'make verify' - run presubmission checks; 'make lint' -
+      run golangci-lint; 'make clean' - remove build artifacts.
+
+  - name: First build is slow
+    contents: >
+      The first build or test run downloads the Go toolchain matching the go.mod
+      toolchain directive, installs gotestsum and prune-junit-xml from hack/tools,
+      and compiles everything from scratch. Subsequent builds are much faster due
+      to Go's build cache.
